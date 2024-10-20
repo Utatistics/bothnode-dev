@@ -1,0 +1,10 @@
+{
+    "_poolAddressesProvider": "0x64b761D848206f447Fe2dd461b0c635Ec39EbB27",
+    "_comptrollerAddress": "0x3d9819210A31b4961b30EF54bE2aeD79B9c9Cd3B",
+    "_cEthAddress": "0x4Ddc2D193948926D02f9B1fE9e1daa0718270ED5",
+    "_cWBTCAddress": "0xC11b1268C1A384e55C48c2391d8d480264A3A7F4",
+    "_bzxAddress": "0xfe4F0eb0A1Ad109185c9AaDE64C48ff8e928e54B", 
+    "_swapRouterAddress": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+    "_wbtcAddress": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "_wethAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+}
