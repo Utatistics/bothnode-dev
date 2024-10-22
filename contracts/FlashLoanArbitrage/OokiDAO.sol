@@ -44,19 +44,25 @@ interface ILoanTokenLogicStandard {
 }
 
 contract OokiDAOInteraction {
+    address public bzxAddress;
     address public wethAddress; // Address of WETH token
     address public wbtcAddress; // Address of WBTC token
     address public underlyingTokenAddress;
-
+    
     IBZX public bzx;
     ILoanTokenLogicStandard public loanTokenLogic;
-
+    event LogConstructor(string message, address someAddress, uint256 someValue);
+    
     constructor(address _bzxAddress, address _wethAddress, address _wbtcAddress) {
+        emit LogConstructor("Constructor started", address(this), 0);
+        bzxAddress = _bzxAddress;
         wethAddress = _wethAddress;
         wbtcAddress = _wbtcAddress;
 
         bzx = IBZX(_bzxAddress);
         underlyingTokenAddress = bzx.underlyingToLoanPool(wbtcAddress); // return the address to the pool for the underlying asset.
+        require(underlyingTokenAddress != address(0), "Invalid loan pool address");
+
         loanTokenLogic = ILoanTokenLogicStandard(underlyingTokenAddress);
     }
 

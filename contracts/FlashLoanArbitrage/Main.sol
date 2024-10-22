@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@aave/core-v3/contracts/flashloan/base/FlashLoanReceiverBase.sol";
+//import "@aave/core-v3/contracts/flashloan/base/FlashLoanReceiverBase.sol";
+import "@aave/core-v3/contracts/interfaces/IPool.sol";
+import "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol"; // Import Ownable for access control
 
@@ -9,7 +11,9 @@ import "./CompoundInterface.sol";
 import "./OokiDAO.sol";
 import "./UniswapInterface.sol";
 
-contract FlashLoanArbitrage is FlashLoanReceiverBase {
+contract FlashLoanArbitrage {
+    IPool public POOL;
+
     CompoundInteraction public compound;
     OokiDAOInteraction public ookidao;
     UniswapInteraction public uniswap;
@@ -35,13 +39,13 @@ contract FlashLoanArbitrage is FlashLoanReceiverBase {
         address _wethAddress // WETH9
 
     )
-        FlashLoanReceiverBase(IPoolAddressesProvider(_poolAddressesProvider))
     {
+        IPoolAddressesProvider provider = IPoolAddressesProvider(_poolAddressesProvider);
+        POOL = IPool(provider.getPool());
         compound = new CompoundInteraction(_comptrollerAddress, _cEthAddress, _cWBTCAddress);
-        //ookidao = new OokiDAOInteraction(_bzxAddress, _cEthAddress, _wbtcAddress);
-        //uniswap = new UniswapInteraction(_swapRouterAddress, _wbtcAddress, _wethAddress);
+        ookidao = new OokiDAOInteraction(_bzxAddress, _cEthAddress, _wbtcAddress);
+        uniswap = new UniswapInteraction(_swapRouterAddress, _wbtcAddress, _wethAddress);
     }
-
     // Emdpoint function to execute flash loan
     function executeFlashLoan(
         address[] calldata assets,
@@ -69,7 +73,7 @@ contract FlashLoanArbitrage is FlashLoanReceiverBase {
         uint256[] calldata premiums,
         address initiator,
         bytes calldata params
-    ) external override returns (bool) {
+    ) external returns (bool) {
         uint256 loanAmount = amounts[0];  // The amount you borrow for the flashloan as a whole
         uint256 repayAmount = loanAmount + premiums[0];  // Loan amount + fees
 

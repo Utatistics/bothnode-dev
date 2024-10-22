@@ -35,7 +35,8 @@ interface PriceFeed {
 }
 
 contract CompoundInteraction {
-    event CompundLog(string, uint256);
+    event CompoundLog(string, uint256);
+    event CompoundAddressLog(string, address);
 
     // State variables 
     address public comptrollerAddress;
@@ -43,6 +44,10 @@ contract CompoundInteraction {
     address public cWBTCAddress;
     
     constructor(address _comptrollerAddress, address payable _cEthAddress, address _cWBTCAddress){
+        emit CompoundAddressLog("comptrollerAddress", _comptrollerAddress);
+        emit CompoundAddressLog("cEthAddress", _cEthAddress);
+        emit CompoundAddressLog("cWBTCAddress", _cWBTCAddress);
+        
         comptrollerAddress = _comptrollerAddress;
         cEthAddress = _cEthAddress;
         cWBTCAddress = _cWBTCAddress;
@@ -77,11 +82,11 @@ contract CompoundInteraction {
         }
         require(shortfall == 0, "account underwater");
         require(liquidity > 0, "account has excess collateral");
-        emit CompundLog("Maximum ETH Borrow (borrow far less!)", liquidity);
+        emit CompoundLog("Maximum ETH Borrow (borrow far less!)", liquidity);
 
         // Get the collateral factor for our collateral
         (bool _isListed, uint collateralFactorMantissa) = comptroller.markets(cEthAddress);
-        emit CompundLog('Collateral Factor', collateralFactorMantissa);
+        emit CompoundLog('Collateral Factor', collateralFactorMantissa);
 
         // Calculate a safe borrowing amount (e.g., 90% of available liquidity)
         uint256 safeBorrowAmount = liquidity * 90 / 100; // 90% of liquidity
@@ -91,7 +96,7 @@ contract CompoundInteraction {
 
         // Check the current borrow balance for this contract's address
         uint256 borrows = cEth.borrowBalanceCurrent(address(this));
-        emit CompundLog("Current ETH borrow amount", borrows);
+        emit CompoundLog("Current ETH borrow amount", borrows);
 
         return wbtcBurrowAmount;
 

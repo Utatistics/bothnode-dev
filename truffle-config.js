@@ -102,8 +102,8 @@ module.exports = {
   mocha: {
     // timeout: 100000
   },
-
   // Configure your compilers
+/*
   compilers: {
     solc: {
       version: "0.8.21",      // Fetch exact version from solc-bin (default: truffle's version)
@@ -117,7 +117,26 @@ module.exports = {
       // }
     }
   },
-
+*/
+  compilers: {
+    solc: {
+      version: "0.8.21", // Specify your compiler version
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200
+        },
+        // Add the below option to minimize warnings
+        evmVersion: "istanbul",
+        outputSelection: {
+          "*": {
+            "": ["ast"],
+            "*": ["abi", "evm.bytecode", "evm.deployedBytecode", "evm.methodIdentifiers"]
+          }
+        }
+      }
+    }
+  }
   // Truffle DB is currently disabled by default; to enable it, change enabled:
   // false to enabled: true. The default storage location can also be
   // overridden by specifying the adapter settings, as shown in the commented code below.
