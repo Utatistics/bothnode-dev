@@ -54,6 +54,7 @@ module.exports = async function(deployer, network, accounts) {
             // Prepare the document to be inserted/updated in MongoDB
             const contractDocument = {
                 address: address,
+                timestamp: new Date(),
                 contractName: contractName,
                 abi: abi,
                 bytecode: bytecode,

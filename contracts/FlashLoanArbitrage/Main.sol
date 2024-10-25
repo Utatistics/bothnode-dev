@@ -65,8 +65,14 @@ contract FlashLoanArbitrage {
 
         // POOL will automatically pull the repayment from the contract once approved
     }
+    
+    event FlashLoanExecuted(
+        address indexed initiator,
+        uint256 wbtcBurrowAmount,
+        uint256 repayAmount
+    );
 
-    // This function will be called by Aave once the flash loan is granted
+    // This function will be called by Aave once the flash loan is granted    
     function executeOperation(
         address[] calldata assets,
         uint256[] calldata amounts,
@@ -74,22 +80,30 @@ contract FlashLoanArbitrage {
         address initiator,
         bytes calldata params
     ) external returns (bool) {
-        uint256 loanAmount = amounts[0];  // The amount you borrow for the flashloan as a whole
-        uint256 repayAmount = loanAmount + premiums[0];  // Loan amount + fees
+        // Step 1: Decode the parameters
+        uint256 repayAmount = amounts[0] + premiums[0];  // Loan amount + fees
+        (uint256 etAsCollateralAmount, uint256 ethAmShortAmount, uint256 leverage) = abi.decode(params, (uint256, uint256, uint256));
+        etAsCollateralAmount = etAsCollateralAmount * 1 ether;
+        ethAmShortAmount = ethAmShortAmount * 1 ether;
 
         // Step 2: Supply ETH as collateral and borrow WBTC from Compound
-        uint256 wbtcBurrowAmount = compound.supplyETHAndBorrowWBTC(5500 ether);  // uint256 ethAmountAsCollateral -> uint256 wbtcBurrowAmount
+        uint256 wbtcBurrowAmount = compound.supplyETHAndBorrowWBTC(etAsCollateralAmount);
 
         // Step 3: Open short position on OokiDAO
-        ookidao.openShortPosition(1300 ether, 5);  // uint256 ethAmShortAmount, uint256 leverage
+        ookidao.openShortPosition(ethAmShortAmount, leverage);
 
         // Step 4: Swap WBTC for ETH via Uniswap
-        uniswap.swapWbtcForEth(wbtcBurrowAmount);  // uint256 amountIn
+        uniswap.swapWbtcForEth(wbtcBurrowAmount);
 
         // Step 5: Repay flash loan
         _repayFlashLoan(assets[0], repayAmount);
 
+        // Emit the event for tracking
+        emit FlashLoanExecuted(initiator, wbtcBurrowAmount, repayAmount);
+
         return true;
     }
+    
+
 }
 
