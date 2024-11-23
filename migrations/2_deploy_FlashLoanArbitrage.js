@@ -32,37 +32,14 @@ module.exports = async function(deployer, network, accounts) {
             _wethAddress
         );
 
-        console.log("\x1b[35m%s\x1b[m", "->After Deployment");
-
         /** Post deployment */
-        const instance = await FlashLoanArbitrage.deployed();
-        const address = instance.address
-        console.log("\x1b[35m%s\x1b[m", `->Contract deployed at: ${address}`);
-
-        // Call the function to update MongoDB with contract data
+        // Skip MongoDB update if fork network
         if (network.includes("fork")) {
-            console.log("\x1b[35m%s\x1b[m", "->Dry-run simulation: Skipping MongoDB update.");
-        } else {
-            console.log("\x1b[35m%s\x1b[m", "->Updating MongoDB.");
-            // Load the contract artifact (JSON file) to get ABI and bytecode
-            const contractPath = path.join(__dirname, `../build/contracts/${ContractName}.json`);        
-            const contractData = JSON.parse(fs.readFileSync(contractPath, 'utf8'));
-
-            // Extract the ABI, bytecode, and sourcePath
-            const { contractName, abi, bytecode, sourcePath } = contractData;
-
-            // Prepare the document to be inserted/updated in MongoDB
-            const contractDocument = {
-                address: address,
-                timestamp: new Date(),
-                contractName: contractName,
-                abi: abi,
-                bytecode: bytecode,
-                sourcePath: sourcePath,
-                address: instance.address,
-                network: network
-            };
-            await updateContractToMongoDB(contractDocument);
+            console.log("\x1b[35m%s\x1b[m", "-> Dry-run simulation: Skipping MongoDB update.");
+        }
+        else {
+            const document = await createDocument(FlashLoan, ContractName, network);
+            await updateContractToMongoDB(document);    
         }
 
     } catch (error) {
@@ -70,42 +47,3 @@ module.exports = async function(deployer, network, accounts) {
         console.error("-> Deployment failed:", error);
     }
 };
-
-// MongoDB connection and contract data update function
-async function updateContractToMongoDB(contractDocument) {
-    const dbName = "contract_db"
-    const collectionName = "deployment"; // MongoDB collection to store contract data
-
-    const username = config.DB.init_username;
-    const password = config.DB.init_password;
-    const connectionString = config.DB.connection_string;
-    
-    const [protocol, rest] = connectionString.split("://");
-    const authPart = `${username}:${password}@`;
-    const newConnectionString = `${protocol}://${authPart}${rest}`;
-
-    try {
-        // Connect to MongoDB
-        const client = new MongoClient(newConnectionString, { useNewUrlParser: true, useUnifiedTopology: true });
-        await client.connect();
-        console.log("Connected to MongoDB");
-
-        const db = client.db(dbName);
-        const collection = db.collection(collectionName);
-
-        // Insert or update the contract data
-        await collection.updateOne(
-            { address: contractDocument.address }, // Match byh the unique address field
-            // { contractName: contractDocument.contractName, network: contractDocument.network }, // Match by contractName and network
-            { $set: contractDocument }, // Update the document
-            { upsert: true }            // Insert if not exists
-        );
-        console.log(`Contract data for ${contractDocument.contractName} updated in MongoDB`);
-
-        // Close the MongoDB connection
-        await client.close();
-        console.log("MongoDB connection closed");
-    } catch (error) {
-        console.error("Error updating contract in MongoDB:", error);
-    }
-}

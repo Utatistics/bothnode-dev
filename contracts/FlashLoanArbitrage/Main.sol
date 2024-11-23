@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.10;
 
 //import "@aave/core-v3/contracts/flashloan/base/FlashLoanReceiverBase.sol";
 import "@aave/core-v3/contracts/interfaces/IPool.sol";
@@ -12,12 +12,14 @@ import "./OokiDAO.sol";
 import "./UniswapInterface.sol";
 
 contract FlashLoanArbitrage {
-    IPool public POOL;
+    event LogPoolAddress(address poolAddress);
+    address payable owner;
 
+    IPool public POOL;
     CompoundInteraction public compound;
     OokiDAOInteraction public ookidao;
     UniswapInteraction public uniswap;
-
+    
     constructor(
         /* Smart contract address */
         // Aave (i.e flashloan provider)
@@ -40,12 +42,31 @@ contract FlashLoanArbitrage {
 
     )
     {
+        owner = payable(msg.sender); // who called this constructor?
+
         IPoolAddressesProvider provider = IPoolAddressesProvider(_poolAddressesProvider);
-        POOL = IPool(provider.getPool());
+        POOL = IPool(provider.getPool());  // Initialize the POOL contract
+
         compound = new CompoundInteraction(_comptrollerAddress, _cEthAddress, _cWBTCAddress);
         ookidao = new OokiDAOInteraction(_bzxAddress, _cEthAddress, _wbtcAddress);
         uniswap = new UniswapInteraction(_swapRouterAddress, _wbtcAddress, _wethAddress);
     }
+    
+    event FlashLoanStatus(
+        string status
+    );
+
+    event FlashLoanExecuted(
+        address indexed initiator,
+        uint256 wbtcBurrowAmount,
+        uint256 repayAmount
+    );
+
+     // New function to retrieve the POOL address
+    function getPoolAddress() public view returns (address) {
+        return address(POOL);
+    }
+
     // Emdpoint function to execute flash loan
     function executeFlashLoan(
         address[] calldata assets,
@@ -54,8 +75,11 @@ contract FlashLoanArbitrage {
         address onBehalfOf,
         bytes calldata params
     ) external {
+
         // Initiate the flash loan
+        emit FlashLoanStatus("Initiating flashloan...");
         POOL.flashLoan(address(this), assets, flashLoanAmounts, modes, onBehalfOf, params, 0);
+        emit FlashLoanStatus("Initiatiated flashloan.");
     }
 
     // Internal function to repay flash loan
@@ -65,12 +89,6 @@ contract FlashLoanArbitrage {
 
         // POOL will automatically pull the repayment from the contract once approved
     }
-    
-    event FlashLoanExecuted(
-        address indexed initiator,
-        uint256 wbtcBurrowAmount,
-        uint256 repayAmount
-    );
 
     // This function will be called by Aave once the flash loan is granted    
     function executeOperation(
@@ -82,6 +100,7 @@ contract FlashLoanArbitrage {
     ) external returns (bool) {
         // Step 1: Decode the parameters
         uint256 repayAmount = amounts[0] + premiums[0];  // Loan amount + fees
+        /*
         (uint256 etAsCollateralAmount, uint256 ethAmShortAmount, uint256 leverage) = abi.decode(params, (uint256, uint256, uint256));
         etAsCollateralAmount = etAsCollateralAmount * 1 ether;
         ethAmShortAmount = ethAmShortAmount * 1 ether;
@@ -94,16 +113,31 @@ contract FlashLoanArbitrage {
 
         // Step 4: Swap WBTC for ETH via Uniswap
         uniswap.swapWbtcForEth(wbtcBurrowAmount);
+        */
 
         // Step 5: Repay flash loan
         _repayFlashLoan(assets[0], repayAmount);
 
         // Emit the event for tracking
-        emit FlashLoanExecuted(initiator, wbtcBurrowAmount, repayAmount);
+        // emit FlashLoanExecuted(initiator, wbtcBurrowAmount, repayAmount);
 
         return true;
     }
     
+    function getBalance(address _tokenAddress) external view returns (uint256) {
+        return IERC20(_tokenAddress).balanceOf(address(this));
+    }
 
+    function withdraw(address _tokenAddress) external onlyOwner {
+        IERC20 token = IERC20(_tokenAddress);
+        token.transfer(msg.sender, token.balanceOf(address(this)));
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the contract owner can call this funciton");
+        _;
+    }
+
+    receive () external payable {}
 }
 
