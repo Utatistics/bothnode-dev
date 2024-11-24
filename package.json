@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@aave/core-v3": "^1.19.3",
+    "@openzeppelin/contracts": "^5.1.0",
+    "@uniswap/v3-periphery": "^1.4.4",
+    "mongodb": "^6.10.0"
+  }
+}
