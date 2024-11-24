@@ -1,8 +1,4 @@
-const { MongoClient } = require('mongodb');
-
-const fs = require('fs');  // Import the file system module
-const path = require('path');
-const config = JSON.parse(fs.readFileSync(path.join(__dirname, '../config.json'), 'utf8'));
+const { createDocument, updateContractToMongoDB } = require('./db_util')
 
 module.exports = async function(deployer, network, accounts) {
     const ContractName = "FlashLoanArbitrage"
@@ -38,7 +34,7 @@ module.exports = async function(deployer, network, accounts) {
             console.log("\x1b[35m%s\x1b[m", "-> Dry-run simulation: Skipping MongoDB update.");
         }
         else {
-            const document = await createDocument(FlashLoan, ContractName, network);
+            const document = await createDocument(FlashLoanArbitrage, ContractName, network);
             await updateContractToMongoDB(document);    
         }
 
