@@ -20,6 +20,10 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         bytes memory params = "";
         uint16 referralCode = 0;
 
+        require(POOL != address(0), "Invalid pool address");
+        require(_amount > 0, "Amount must be greater than zero");
+        require(IERC20(_token).balanceOf(address(this)) >= _amount, "Insufficient balance for flash loan");
+
         POOL.flashLoanSimple(
             receiverAddress,
             asset,
