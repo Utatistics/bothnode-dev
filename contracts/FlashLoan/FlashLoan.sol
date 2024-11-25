@@ -13,6 +13,9 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
     {
     }
 
+    event FlashLoanReceiverAddress(address indexed receiverAddress);
+    
+
     function fn_RequestFlashLoan(address _token, uint256 _amount) public {
         address receiverAddress = address(this);
         address asset = _token;
@@ -20,10 +23,9 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         bytes memory params = "";
         uint16 referralCode = 0;
 
-        //require(address(POOL) != address(0), "Invalid pool address");
-        //require(_amount > 0, "Amount must be greater than zero");
-        //require(IERC20(_token).balanceOf(address(this)) >= _amount, "Insufficient balance for flash loan");
-
+        require(receiverAddress == address(this), "Invalid receiver address");
+        emit FlashLoanReceiverAddress(receiverAddress); // Emit the address for debugging
+        
         POOL.flashLoanSimple(
             receiverAddress,
             asset,
