@@ -1,0 +1,264 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/home/vagrant/bothnode-dev/contracts/FlashLoan.sol": {
+      "lastModificationDate": 1732635422109,
+      "contentHash": "51fda32a9333bd38a87583436e917d2d",
+      "sourceName": "contracts/FlashLoan.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol",
+        "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol",
+        "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol"
+      ],
+      "versionPragmas": [
+        "0.8.10"
+      ],
+      "artifacts": [
+        "FlashLoan"
+      ]
+    },
+    "/home/vagrant/bothnode-dev/node_modules/@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol": {
+      "lastModificationDate": 1729981373084,
+      "contentHash": "3d3bd19e24f4d84e6ab0eb6c799ce4df",
+      "sourceName": "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interfaces/IFlashLoanSimpleReceiver.sol",
+        "../../interfaces/IPoolAddressesProvider.sol",
+        "../../interfaces/IPool.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.10"
+      ],
+      "artifacts": [
+        "FlashLoanSimpleReceiverBase"
+      ]
+    },
+    "/home/vagrant/bothnode-dev/node_modules/@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol": {
+      "lastModificationDate": 1729437478438,
+      "contentHash": "75709782c90506d3ce968d5a6e06b900",
+      "sourceName": "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IPoolAddressesProvider"
+      ]
+    },
+    "/home/vagrant/bothnode-dev/node_modules/@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol": {
+      "lastModificationDate": 1729437478430,
+      "contentHash": "ca23b7c429c310a0837290e57cb08904",
+      "sourceName": "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "/home/vagrant/bothnode-dev/node_modules/@aave/core-v3/contracts/interfaces/IPool.sol": {
+      "lastModificationDate": 1729981373084,
+      "contentHash": "659d2f6a63793331a99484a31c17c5dd",
+      "sourceName": "@aave/core-v3/contracts/interfaces/IPool.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IPoolAddressesProvider.sol",
+        "../protocol/libraries/types/DataTypes.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.10"
+      ],
+      "artifacts": [
+        "IPool"
+      ]
+    },
+    "/home/vagrant/bothnode-dev/node_modules/@aave/core-v3/contracts/flashloan/interfaces/IFlashLoanSimpleReceiver.sol": {
+      "lastModificationDate": 1729981373084,
+      "contentHash": "518a1280d5e8c4a317778f2cd1d4c9c7",
+      "sourceName": "@aave/core-v3/contracts/flashloan/interfaces/IFlashLoanSimpleReceiver.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../../interfaces/IPoolAddressesProvider.sol",
+        "../../interfaces/IPool.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.10"
+      ],
+      "artifacts": [
+        "IFlashLoanSimpleReceiver"
+      ]
+    },
+    "/home/vagrant/bothnode-dev/node_modules/@aave/core-v3/contracts/protocol/libraries/types/DataTypes.sol": {
+      "lastModificationDate": 1729437478406,
+      "contentHash": "5d70776caccb171510548c8c0279088e",
+      "sourceName": "@aave/core-v3/contracts/protocol/libraries/types/DataTypes.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "DataTypes"
+      ]
+    }
+  }
+}
