@@ -15,10 +15,12 @@ module.exports = {
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_KEY}`,  // Sepolia testnet URL
       accounts: [process.env.PRIVATE_KEY],
+      chainId: 11155111 // Sepolia chain ID
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,  // Ethereum Mainnet URL
       accounts: [process.env.PRIVATE_KEY],
+      chainId: 1,  // Mainnet chain ID
     },
   },
   solidity: {

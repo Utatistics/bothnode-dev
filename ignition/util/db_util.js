@@ -8,7 +8,7 @@ const config = JSON.parse(fs.readFileSync(path.join(__dirname, '../../config.jso
 async function createDocument(contractName, deployedAddress, network) {
     console.log("\x1b[35m%s\x1b[m", "-> After Deployment: preparing MongoDB update.");
     console.log("\x1b[33m%s\x1b[0m", `-> Contract deployed at: ${deployedAddress}`);
-    
+
     // Load the contract artifact to get ABI and bytecode
     const contractPath = path.join(__dirname, `../../artifacts/contracts/${contractName}.sol/${contractName}.json`);
     const contractData = JSON.parse(fs.readFileSync(contractPath, 'utf8'));
@@ -16,8 +16,7 @@ async function createDocument(contractName, deployedAddress, network) {
     // Extract necessary contract data
     const { abi, bytecode, sourcePath } = contractData;
 
-    // Create and return the contract document
-    return {
+    const document = {
         address: deployedAddress,
         timestamp: new Date(),
         contractName: contractName,
@@ -25,7 +24,10 @@ async function createDocument(contractName, deployedAddress, network) {
         bytecode: bytecode,
         sourcePath: sourcePath,
         network: network,
-    };
+    }
+
+    // Create and return the contract document
+    return { document };
 }
 
 // MongoDB update function
