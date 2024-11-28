@@ -14,7 +14,7 @@ async function createDocument(contractName, deployedAddress, network) {
     const contractData = JSON.parse(fs.readFileSync(contractPath, 'utf8'));
 
     // Extract necessary contract data
-    const { abi, bytecode, sourcePath } = contractData;
+    const { abi, bytecode, sourceName } = contractData;
 
     const document = {
         address: deployedAddress,
@@ -22,18 +22,21 @@ async function createDocument(contractName, deployedAddress, network) {
         contractName: contractName,
         abi: abi,
         bytecode: bytecode,
-        sourcePath: sourcePath,
-        network: network,
+        sourcePath: sourceName,
+        network: network.name,
     }
 
-    // Create and return the contract document
-    return { document };
+    // debug
+    // console.log(`>>> document: \n${JSON.stringify(document, null, 2)}`);
+    return document;
 }
 
 // MongoDB update function
 async function updateContractToMongoDB(contractDocument) {
     const dbName = "contract_db";
     const collectionName = "deployment"; // MongoDB collection name
+    console.log(`>>>dbName:${dbName}`)
+    console.log(`>>>collectionName:${collectionName}`)
 
     const username = config.DB.init_username;
     const password = config.DB.init_password;

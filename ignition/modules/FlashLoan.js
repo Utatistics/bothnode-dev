@@ -3,19 +3,24 @@ const path = require('path');
 
 const { network } = require("hardhat");
 const { buildModule } = require("@nomicfoundation/hardhat-ignition/modules");
-const { createDocument, updateContractToMongoDB } = require('../util/db_util');
 
 
 /** deployment */
 // define parameters
 const contractName = 'FlashLoan';
-const chainId = network.config.chainId;
 const parameters = JSON.parse(fs.readFileSync(path.join(__dirname, '../parameters.json'), 'utf8'));
 
-// set addressProvider based on the network
-console.log(chainId)
+console.log(`contractName=${contractName}`)
 console.log(parameters[contractName]);
 
+const deployInfo = {
+  network,
+  contractName,
+};
+fs.writeFileSync('./deployment-info.json', JSON.stringify(deployInfo, null, 2));
+
+
+// extract constructor address
 let addressesProvider;
 
 if (network.name === 'mainnet') {
@@ -29,9 +34,9 @@ if (network.name === 'mainnet') {
   return;
 }
 console.log(addressesProvider);
-console.log()
 
 // deploy contract
+
 const FlashLoanModule = buildModule("FlashLoanModule", (m) => {
   const FlashLoan = m.contract(contractName, [addressesProvider]);
   return { FlashLoan };
@@ -41,19 +46,3 @@ module.exports = FlashLoanModule;
 console.log("FlashLoan Module deployed!");
  
 
-/** post-deployment */
-const deployedAddresses = JSON.parse(fs.readFileSync(path.join(__dirname, `../deployments/chain-${chainId}/deployed_addresses.json`), 'utf8'));
-const deployedAddress = deployedAddresses[`${contractName}Module#${contractName}`];
-
-mongoDBOperationExec(deployedAddress);
-
-async function mongoDBOperationExec(deployedAddress) {
-  console.log(deployedAddress)
-  // MongoDB update
-  try {
-    const document = await createDocument(contractName, deployedAddress, network);
-    await updateContractToMongoDB(document)  
-  } catch (error) {
-    console.error("-> MogoDB update failed:", error);
-  }
-}
